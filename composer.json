@@ -1,0 +1,12 @@
+{
+    "require": {
+        "symfony/finder": "2.3.*",
+        "symfony/filesystem": "2.5.*@dev",
+        "symfony/console": "2.3.*@dev",
+        "symfony/serializer": "2.5.*@dev",
+        "pimple/pimple": "2.0.x-dev"
+    },
+    "autoload":{
+        "psr-0": {"BOL\\": "src/"}
+    }
+}
