@@ -127,21 +127,35 @@ class BOLBook
 
         for ($i=$this->begin; $i<$this->end; $i++)
         {
-            // Get web page
-            $crawler = $client->request('GET', $this->title . $i);
+            try
+            {
+                // Get web page
+                $crawler = $client->request('GET', $this->title . $i);
 
-            print_r($i.PHP_EOL);
+                // First check if we do not get a 500 ERROR
+                if (strpos(trim($crawler->text()), '500')) {
+                    print_r('Node ' . $i . ' returned a HTTP status code 500.'.PHP_EOL);
+                }
+                else
+                {
+                    if (isset($crawler))
+                    {
+                        // @todo Preprocess crawler to remove obsolete elements
 
-            // @todo Preprocess crawler to remove obsolete elements
+                        // Create Page
+                        $page = new BOLPage($crawler, $i);
 
-            // Create Page
-            $page = new BOLPage($crawler, $i);
+                        $page->readPage($bolCrawler, $crawler);
 
-            // Read Page
-            $page->readPage($bolCrawler, $crawler);
+                        // Set Book
+                        array_push($this->book, $page);
 
-            // Set Book
-            array_push($this->book, $page);
+                    }
+                }
+            }
+            catch (\Exception $e) {
+                print_r('Fatal error for node ' . $i . ' :' . $e);
+            }
         }
 
         // Serialize to Page to JSON
